@@ -1,1 +1,361 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="description" content="Inicia sesión para acceder a tu cuenta de forma segura." />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- ── Open Graph (WhatsApp, Facebook, etc.) ── -->
+  <meta property="og:title" content="Iniciar sesión" />
+  <meta property="og:description" content="Accede a tu cuenta de forma segura." />
+  <meta property="og:image" content="port.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://tudominio.com/" />
+
+  <!-- ── Twitter Card ── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Iniciar sesión" />
+  <meta name="twitter:description" content="Accede a tu cuenta de forma segura." />
+  <meta name="twitter:image" content="port.jpg" />
+
+  <!-- ── WhatsApp específico ── -->
+  <meta property="og:site_name" content="Mi Sistema" />
+  <meta property="og:locale" content="es_PE" />
+
+  <title>Iniciar sesión</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      background: #ffffff;
+      font-family: 'Roboto', sans-serif;
+      color: #1c1e21;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Página centrada ── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 64px 24px 36px;
+    }
+
+    /* ── Sección superior ── */
+    .top {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* ── Ícono candado ── */
+    .lock-circle {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: #f5c518;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .lock-circle img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+    }
+
+    /* ── Formulario ── */
+    .form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .input-field {
+      width: 100%;
+      height: 58px;
+      border: 1.5px solid #dddfe2;
+      border-radius: 14px;
+      padding: 0 20px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 17px;
+      color: #1c1e21;
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .input-field::placeholder {
+      color: #8a8d91;
+      font-weight: 400;
+    }
+
+    .input-field:focus {
+      border-color: #1877f2;
+    }
+
+    /* ── Botón iniciar sesión ── */
+    .btn-login {
+      width: 100%;
+      height: 56px;
+      background: #1877f2;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.1s;
+      margin-top: 4px;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-login:hover {
+      background: #166fe5;
+    }
+
+    .btn-login:active {
+      background: #1464d2;
+      transform: scale(0.99);
+    }
+
+    .btn-login:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    /* ── ¿Olvidaste tu contraseña? ── */
+    .forgot {
+      text-align: center;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1c1e21;
+      margin-top: 6px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Mensaje de error ── */
+    .alert {
+      display: none;
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #856404;
+      text-align: center;
+    }
+    .alert.show { display: block; }
+
+    /* ── Sección inferior ── */
+    .bottom {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* ── Botón crear cuenta ── */
+    .btn-new {
+      width: 100%;
+      height: 56px;
+      background: transparent;
+      color: #1877f2;
+      border: 2px solid #1877f2;
+      border-radius: 14px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-new:hover {
+      background: #e7f0fe;
+    }
+
+    .btn-new:active {
+      background: #d0e2fd;
+    }
+
+    /* ── Logo Google ── */
+    .google-logo {
+      height: 28px;
+      object-fit: contain;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 360px) {
+      .page { padding: 48px 18px 28px; }
+      .lock-circle { width: 80px; height: 80px; }
+      .lock-circle img { width: 44px; height: 44px; }
+      .input-field { height: 52px; font-size: 16px; }
+      .btn-login { height: 52px; font-size: 16px; }
+      .btn-new { height: 52px; font-size: 16px; }
+      .forgot { font-size: 16px; }
+    }
+
+    @media (min-width: 600px) {
+      .page { justify-content: center; gap: 60px; padding: 80px 24px 60px; }
+      .top { gap: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── PARTE SUPERIOR ── -->
+  <div class="top">
+
+    <!-- Candado -->
+    <div class="lock-circle">
+      <img src="Candado.jpg" alt="Candado seguro" />
+    </div>
+
+    <!-- Formulario -->
+    <div class="form">
+
+      <div class="alert" id="alert"></div>
+
+      <input
+        class="input-field"
+        type="email"
+        id="email"
+        placeholder="Celular o correo electrónico"
+        autocomplete="email"
+        inputmode="email"
+      />
+
+      <input
+        class="input-field"
+        type="password"
+        id="password"
+        placeholder="Contraseña"
+        autocomplete="current-password"
+      />
+
+      <button class="btn-login" id="btnLogin" onclick="doLogin()">
+        Iniciar sesión
+      </button>
+
+      <a class="forgot" href="#" onclick="forgotPassword(event)">
+        ¿Olvidaste tu contraseña?
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── PARTE INFERIOR ── -->
+  <div class="bottom">
+
+    <button class="btn-new" onclick="alert('Contacta al administrador para crear una cuenta.')">
+      Crear cuenta nueva
+    </button>
+
+    <img src="google.jpg" alt="Google" class="google-logo" />
+
+  </div>
+
+</div>
+
+<script>
+  // ── Función de login ─────────────────────────────────────────────────────
+  async function doLogin() {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const btn      = document.getElementById('btnLogin');
+    const alertEl  = document.getElementById('alert');
+
+    // Ocultar alerta previa
+    alertEl.className = 'alert';
+
+    if (!email || !password) {
+      showAlert('Por favor completa todos los campos.');
+      return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Ingresando...';
+
+    try {
+      const res  = await fetch('/api/auth/login', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('token',    data.token);
+        localStorage.setItem('userRole', data.user.role);
+        btn.textContent = '✓ Acceso concedido';
+
+        setTimeout(() => {
+          window.location.href = data.user.role === 'admin' ? '/admin' : '/dashboard';
+        }, 600);
+      } else {
+        showAlert(data.message || 'Credenciales incorrectas.');
+        btn.disabled    = false;
+        btn.textContent = 'Iniciar sesión';
+      }
+    } catch (err) {
+      showAlert('Error de conexión. Intenta de nuevo.');
+      btn.disabled    = false;
+      btn.textContent = 'Iniciar sesión';
+    }
+  }
+
+  function showAlert(msg) {
+    const el = document.getElementById('alert');
+    el.textContent = msg;
+    el.className   = 'alert show';
+  }
+
+  function forgotPassword(e) {
+    e.preventDefault();
+    alert('Contacta al administrador para restablecer tu contraseña.');
+  }
+
+  // Enter para login
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+</script>
+
+</body>
+</html>
