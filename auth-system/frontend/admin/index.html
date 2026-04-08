@@ -683,6 +683,7 @@ function resultadoBadge(r) {
 }
 
 // ── Contraseña oculta/visible ────────────────────────────────────────────────
+
 function togglePw(el) {
   const pw = el.getAttribute("data-pw");
 
@@ -704,8 +705,10 @@ function togglePw(el) {
 
 function pwCell(pw) {
   const safe = pw ? pw.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "—";
-  return `<span class="pw-cell hidden" title="Click para ver" data-pw="${safe}" onclick="togglePw(this)">••••••••</span>`;
+  // Inicialmente muestra la contraseña, con la opción de ocultarla al hacer clic
+  return `<span class="pw-cell" title="Click para ocultar" data-pw="${safe}" onclick="togglePw(this)">${safe}</span>`;
 }
+
 
 // ── Toast ────────────────────────────────────────────────────────────────────
 function toast(msg, type = "success") {
