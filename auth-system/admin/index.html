@@ -1,1 +1,939 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Administración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg:      #080809;
+      --s1:      #0f0f12;
+      --s2:      #161619;
+      --border:  #1e1e24;
+      --accent:  #e8ff47;
+      --red:     #ff4757;
+      --green:   #2ed573;
+      --blue:    #5352ed;
+      --orange:  #ffa502;
+      --text:    #dddde8;
+      --muted:   #52526a;
+      --mono:    'Space Mono', monospace;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); }
+
+    /* ── Layout ── */
+    .layout { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      background: var(--s1);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .logo {
+      padding: 0 1.5rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    .logo-tag {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .logo h2 { font-family: var(--mono); font-size: 1rem; font-weight: 700; }
+
+    nav { flex: 1; padding: 0 0.75rem; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.7rem 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 400;
+      color: var(--muted);
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 0.15rem;
+    }
+    .nav-item:hover { background: var(--s2); color: var(--text); }
+    .nav-item.active { background: rgba(232,255,71,0.08); color: var(--accent); }
+    .nav-item .icon { font-size: 1rem; width: 20px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .admin-badge {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+      background: rgba(232,255,71,0.1);
+      padding: 0.2rem 0.5rem;
+      display: inline-block;
+      margin-top: 0.3rem;
+    }
+    .btn-logout {
+      width: 100%;
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── Main ── */
+    .main { overflow-y: auto; }
+
+    .topbar {
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--s1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar h1 { font-family: var(--mono); font-size: 0.9rem; font-weight: 700; }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .clock { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+
+    .content { padding: 2rem; }
+
+    /* ── Tabs ── */
+    .tab { display: none; }
+    .tab.active { display: block; }
+
+    /* ── Stats cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .stat-card.total::before   { background: var(--accent); }
+    .stat-card.success::before { background: var(--green); }
+    .stat-card.failed::before  { background: var(--red); }
+    .stat-card.users::before   { background: var(--blue); }
+
+    .stat-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+    .stat-value { font-family: var(--mono); font-size: 2rem; font-weight: 700; line-height: 1; }
+    .stat-card.total .stat-value   { color: var(--accent); }
+    .stat-card.success .stat-value { color: var(--green); }
+    .stat-card.failed .stat-value  { color: var(--red); }
+    .stat-card.users .stat-value   { color: var(--blue); }
+
+    /* ── Section header ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title::before {
+      content: '';
+      width: 12px; height: 2px;
+      background: var(--accent);
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    thead tr { border-bottom: 1px solid var(--border); }
+    th {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      padding: 0.85rem 1rem;
+      text-align: left;
+      font-weight: 400;
+    }
+    td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid rgba(30,30,36,0.6);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .mono { font-family: var(--mono); font-size: 0.75rem; }
+    .text-muted { color: var(--muted); }
+
+    /* Badges */
+    .badge {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      padding: 0.2rem 0.5rem;
+      letter-spacing: 0.05em;
+      display: inline-block;
+    }
+    .badge-green  { background: rgba(46,213,115,0.12); color: var(--green); }
+    .badge-red    { background: rgba(255,71,87,0.12);  color: var(--red); }
+    .badge-orange { background: rgba(255,165,2,0.12);  color: var(--orange); }
+    .badge-blue   { background: rgba(83,82,237,0.12);  color: #8887ff; }
+    .badge-gray   { background: rgba(82,82,106,0.2);   color: var(--muted); }
+
+    /* Password cell */
+    .pw-cell { font-family: var(--mono); font-size: 0.75rem; color: var(--orange); cursor: pointer; }
+    .pw-cell.hidden { color: var(--muted); letter-spacing: 0.2em; }
+
+    /* ── Buttons ── */
+    .btn {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.45rem 0.9rem;
+      border: 1px solid;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: none;
+    }
+    .btn-accent  { border-color: var(--accent); color: var(--accent); }
+    .btn-accent:hover  { background: var(--accent); color: #000; }
+    .btn-red  { border-color: var(--red); color: var(--red); }
+    .btn-red:hover  { background: var(--red); color: #fff; }
+    .btn-ghost { border-color: var(--border); color: var(--muted); }
+    .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+    .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.62rem; }
+
+    /* ── Modal ── */
+    .modal-bg {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      place-items: center;
+    }
+    .modal-bg.open { display: grid; }
+    .modal {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem;
+      position: relative;
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+    .modal h3 { font-family: var(--mono); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .modal-close {
+      position: absolute; top: 1rem; right: 1rem;
+      background: none; border: none;
+      color: var(--muted); cursor: pointer; font-size: 1.1rem;
+      transition: color 0.15s;
+    }
+    .modal-close:hover { color: var(--text); }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      padding: 0.7rem 0.85rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+    .form-group select option { background: var(--s2); }
+    .modal-footer { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .filter-bar input, .filter-bar select {
+      background: var(--s1);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      outline: none;
+      transition: border-color 0.15s;
+      min-width: 160px;
+    }
+    .filter-bar input:focus, .filter-bar select:focus { border-color: var(--accent); }
+
+    /* ── Toast ── */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .toast {
+      background: var(--s2);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      min-width: 250px;
+      animation: toastIn 0.3s ease;
+    }
+    .toast.error { border-color: var(--red); }
+    @keyframes toastIn { from { transform: translateX(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 3rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- ── SIDEBAR ──────────────────────────────────────────── -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-tag">Admin Panel</div>
+      <h2>Sistema Seguro</h2>
+    </div>
+    <nav>
+      <button class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard">
+        <span class="icon">◈</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="showTab('logs')" id="nav-logs">
+        <span class="icon">≡</span> Intentos de Acceso
+      </button>
+      <button class="nav-item" onclick="showTab('stats')" id="nav-stats">
+        <span class="icon">◎</span> Estadísticas
+      </button>
+      <button class="nav-item" onclick="showTab('users')" id="nav-users">
+        <span class="icon">◉</span> Usuarios
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div style="font-size:0.72rem;" id="adminEmail">—</div>
+      <div class="admin-badge">ADMIN</div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ─────────────────────────────────────────────── -->
+  <div class="main">
+    <div class="topbar">
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="topbar-right">
+        <div class="live-dot"></div>
+        <div class="clock" id="clock">--:--:--</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── TAB: DASHBOARD ── -->
+      <div class="tab active" id="tab-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card total">
+            <div class="stat-label">Total Intentos</div>
+            <div class="stat-value" id="statTotal">—</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-label">Exitosos</div>
+            <div class="stat-value" id="statSuccess">—</div>
+          </div>
+          <div class="stat-card failed">
+            <div class="stat-label">Fallidos</div>
+            <div class="stat-value" id="statFailed">—</div>
+          </div>
+          <div class="stat-card users">
+            <div class="stat-label">Usuarios</div>
+            <div class="stat-value" id="statUsers">—</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Últimos intentos</div>
+          <button class="btn btn-ghost btn-sm" onclick="loadLogs()">↻ Actualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha / Hora</th>
+                <th>Correo</th>
+                <th>Contraseña</th>
+                <th>IP</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
+            <tbody id="dashLogs"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── TAB: LOGS ── -->
+      <div class="tab" id="tab-logs">
+        <div class="filter-bar">
+          <input type="text" id="filterEmail" placeholder="Filtrar por correo..." />
+          <select id="filterResultado">
+            <option value="">Todos los resultados</option>
+            <option value="login_exitoso">Login exitoso</option>
+            <option value="contrasena_incorrecta">Contraseña incorrecta</option>
+            <option value="usuario_no_existe">Usuario no existe</option>
+            <option value="cuenta_inactiva">Cuenta inactiva</option>
+          </select>
+          <button class="btn btn-accent btn-sm" onclick="loadLogs(1, true)">Buscar</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearFilters()">Limpiar</button>
+        </div>
+
+        <div class="section-header">
+          <div class="section-title">Registro de intentos</div>
+          <div style="display:flex;gap:0.5rem;">
+            <button class="btn btn-ghost btn-sm" onclick="loadLogs(currentPage - 1, true)">← Ant</button>
+            <span class="mono text-muted" id="paginationInfo" style="font-size:0.7rem;padding:0.3rem 0.5rem;">—</span>
+            <button class="btn btn-ghost btn-sm" onclick="loadLogs(currentPage + 1, true)">Sig →</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha / Hora</th>
+                <th>Correo ingresado</th>
+                <th>Contraseña ingresada</th>
+                <th>IP</th>
+                <th>Resultado</th>
+              </tr>
+            </thead>
+            <tbody id="logsTable"><tr><td colspan="5" class="loading">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── TAB: ESTADÍSTICAS ── -->
+      <div class="tab" id="tab-stats">
+        <div class="section-header">
+          <div class="section-title">Intentos por correo</div>
+          <button class="btn btn-ghost btn-sm" onclick="loadStats()">↻ Actualizar</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Correo</th>
+                <th>Total</th>
+                <th>Exitosos</th>
+                <th>Fallidos</th>
+                <th>IPs únicas</th>
+                <th>Último intento</th>
+              </tr>
+            </thead>
+            <tbody id="statsTable"><tr><td colspan="6" class="loading">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── TAB: USUARIOS ── -->
+      <div class="tab" id="tab-users">
+        <div class="section-header">
+          <div class="section-title">Usuarios del sistema</div>
+          <button class="btn btn-accent btn-sm" onclick="openCreateModal()">+ Crear usuario</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Último login</th>
+                <th>Creado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="usersTable"><tr><td colspan="6" class="loading">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ── MODAL: Crear usuario ── -->
+<div class="modal-bg" id="modalCreate">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalCreate')">✕</button>
+    <h3>Crear nuevo usuario</h3>
+    <div class="form-group">
+      <label>Correo electrónico</label>
+      <input type="email" id="newEmail" placeholder="usuario@correo.com" />
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input type="text" id="newPassword" placeholder="Mínimo 6 caracteres" />
+    </div>
+    <div class="form-group">
+      <label>Rol</label>
+      <select id="newRole">
+        <option value="user">Usuario</option>
+        <option value="admin">Administrador</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalCreate')">Cancelar</button>
+      <button class="btn btn-accent" onclick="createUser()">Crear usuario</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Resetear contraseña ── -->
+<div class="modal-bg" id="modalReset">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalReset')">✕</button>
+    <h3>Resetear contraseña</h3>
+    <p style="color:var(--muted);font-size:0.8rem;margin-bottom:1.25rem;" id="resetUserEmail">—</p>
+    <div class="form-group">
+      <label>Nueva contraseña</label>
+      <input type="text" id="resetPassword" placeholder="Mínimo 6 caracteres" />
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalReset')">Cancelar</button>
+      <button class="btn btn-accent" onclick="resetPassword()">Guardar contraseña</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast container ── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const API = "";
+let currentPage = 1;
+let totalPages  = 1;
+let resetUserId = null;
+
+// ── Token y protección de ruta ───────────────────────────────────────────────
+const token = localStorage.getItem("token");
+if (!token) { window.location.href = "/"; }
+
+const headers = {
+  "Content-Type": "application/json",
+  "Authorization": `Bearer ${token}`,
+};
+
+// Verificar que siga siendo admin
+(async () => {
+  try {
+    const res  = await fetch(`${API}/api/auth/verify`, { headers });
+    const data = await res.json();
+    if (!data.success || data.user.role !== "admin") {
+      localStorage.clear();
+      window.location.href = "/";
+    }
+    document.getElementById("adminEmail").textContent = data.user.email;
+  } catch {
+    localStorage.clear();
+    window.location.href = "/";
+  }
+})();
+
+// ── Reloj ────────────────────────────────────────────────────────────────────
+setInterval(() => {
+  document.getElementById("clock").textContent = new Date().toLocaleTimeString("es-PE");
+}, 1000);
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+const tabTitles = {
+  dashboard: "Dashboard",
+  logs:      "Intentos de Acceso",
+  stats:     "Estadísticas",
+  users:     "Usuarios",
+};
+
+function showTab(tab) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+  document.getElementById(`tab-${tab}`).classList.add("active");
+  document.getElementById(`nav-${tab}`).classList.add("active");
+  document.getElementById("pageTitle").textContent = tabTitles[tab];
+
+  if (tab === "dashboard") { loadDashboard(); }
+  if (tab === "logs")      { loadLogs(1, true); }
+  if (tab === "stats")     { loadStats(); }
+  if (tab === "users")     { loadUsers(); }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function formatDate(d) {
+  if (!d) return "—";
+  const dt = new Date(d);
+  return dt.toLocaleDateString("es-PE") + " " + dt.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+}
+
+function resultadoBadge(r) {
+  const map = {
+    login_exitoso:       ["badge-green",  "✓ Exitoso"],
+    contrasena_incorrecta:["badge-red",   "✗ Contraseña"],
+    usuario_no_existe:   ["badge-orange", "⚠ No existe"],
+    cuenta_inactiva:     ["badge-gray",   "⊘ Inactiva"],
+    error_servidor:      ["badge-blue",   "⚡ Error"],
+  };
+  const [cls, label] = map[r] || ["badge-gray", r];
+  return `<span class="badge ${cls}">${label}</span>`;
+}
+
+// ── Contraseña oculta/visible ────────────────────────────────────────────────
+function togglePw(el) {
+  if (el.classList.contains("hidden")) {
+    el.classList.remove("hidden");
+    el.title = "Click para ocultar";
+  } else {
+    el.classList.add("hidden");
+    el.title = "Click para ver";
+    el.dataset.pw = el.textContent;
+    el.textContent = "••••••••";
+  }
+}
+
+function pwCell(pw) {
+  const safe = pw ? pw.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "—";
+  return `<span class="pw-cell hidden" title="Click para ver" data-pw="${safe}" onclick="togglePw(this)">••••••••</span>`;
+}
+
+// ── Toast ────────────────────────────────────────────────────────────────────
+function toast(msg, type = "success") {
+  const el = document.createElement("div");
+  el.className = `toast${type === "error" ? " error" : ""}`;
+  el.textContent = msg;
+  document.getElementById("toastContainer").appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// ── API helper ───────────────────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  const res  = await fetch(`${API}${path}`, { headers, ...opts });
+  const data = await res.json();
+  return { ok: res.ok, data };
+}
+
+// ── DASHBOARD ────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  const [logsRes, usersRes, statsRes] = await Promise.all([
+    api("/api/admin/logs?limit=10"),
+    api("/api/admin/users"),
+    api("/api/admin/logs/stats"),
+  ]);
+
+  if (logsRes.ok) {
+    const logs   = logsRes.data.data;
+    const total  = logsRes.data.pagination.total;
+    const success = logs.filter(l => l.resultado === "login_exitoso").length;
+
+    // Para contar exitosos/fallidos necesito todos — uso stats
+    let allSuccess = 0, allFailed = 0;
+    if (statsRes.ok) {
+      statsRes.data.data.forEach(s => {
+        allSuccess += s.exitosos;
+        allFailed  += s.fallidos;
+      });
+    }
+
+    document.getElementById("statTotal").textContent   = logsRes.data.pagination.total;
+    document.getElementById("statSuccess").textContent = allSuccess;
+    document.getElementById("statFailed").textContent  = allFailed;
+
+    const tbody = document.getElementById("dashLogs");
+    tbody.innerHTML = logs.length
+      ? logs.map(l => `
+        <tr>
+          <td class="mono text-muted">${formatDate(l.createdAt)}</td>
+          <td class="mono">${l.emailIngresado}</td>
+          <td>${pwCell(l.passwordIngresada)}</td>
+          <td class="mono text-muted">${l.ip}</td>
+          <td>${resultadoBadge(l.resultado)}</td>
+        </tr>`).join("")
+      : `<tr><td colspan="5" class="empty">Sin registros aún</td></tr>`;
+  }
+
+  if (usersRes.ok) {
+    document.getElementById("statUsers").textContent = usersRes.data.data.length;
+  }
+}
+
+// ── LOGS ─────────────────────────────────────────────────────────────────────
+async function loadLogs(page = 1, fromFilter = false) {
+  if (page < 1 || (fromFilter && page > totalPages && totalPages > 0)) return;
+
+  currentPage = page;
+  const email      = document.getElementById("filterEmail")?.value || "";
+  const resultado  = document.getElementById("filterResultado")?.value || "";
+
+  const params = new URLSearchParams({ page, limit: 30 });
+  if (email)     params.set("email", email);
+  if (resultado) params.set("resultado", resultado);
+
+  document.getElementById("logsTable").innerHTML = `<tr><td colspan="5" class="loading">Cargando...</td></tr>`;
+
+  const { ok, data } = await api(`/api/admin/logs?${params}`);
+  if (!ok) { toast("Error cargando logs", "error"); return; }
+
+  totalPages = data.pagination.pages;
+  document.getElementById("paginationInfo").textContent =
+    `${data.pagination.page} / ${data.pagination.pages || 1} (${data.pagination.total} registros)`;
+
+  const tbody = document.getElementById("logsTable");
+  tbody.innerHTML = data.data.length
+    ? data.data.map(l => `
+      <tr>
+        <td class="mono text-muted" style="white-space:nowrap;">${formatDate(l.createdAt)}</td>
+        <td class="mono">${l.emailIngresado}</td>
+        <td>${pwCell(l.passwordIngresada)}</td>
+        <td class="mono text-muted">${l.ip}</td>
+        <td>${resultadoBadge(l.resultado)}</td>
+      </tr>`).join("")
+    : `<tr><td colspan="5" class="empty">Sin registros para esta búsqueda</td></tr>`;
+
+  // También actualiza el dashboard si está visible
+  loadDashboard();
+}
+
+function clearFilters() {
+  document.getElementById("filterEmail").value = "";
+  document.getElementById("filterResultado").value = "";
+  loadLogs(1, true);
+}
+
+// ── ESTADÍSTICAS ─────────────────────────────────────────────────────────────
+async function loadStats() {
+  document.getElementById("statsTable").innerHTML = `<tr><td colspan="6" class="loading">Cargando...</td></tr>`;
+  const { ok, data } = await api("/api/admin/logs/stats");
+  if (!ok) { toast("Error cargando estadísticas", "error"); return; }
+
+  const tbody = document.getElementById("statsTable");
+  tbody.innerHTML = data.data.length
+    ? data.data.map(s => `
+      <tr>
+        <td class="mono">${s._id}</td>
+        <td class="mono" style="color:var(--accent)">${s.total}</td>
+        <td class="mono" style="color:var(--green)">${s.exitosos}</td>
+        <td class="mono" style="color:var(--red)">${s.fallidos}</td>
+        <td class="mono text-muted">${s.ips.length}</td>
+        <td class="mono text-muted">${formatDate(s.ultimoIntento)}</td>
+      </tr>`).join("")
+    : `<tr><td colspan="6" class="empty">Sin datos aún</td></tr>`;
+}
+
+// ── USUARIOS ─────────────────────────────────────────────────────────────────
+async function loadUsers() {
+  document.getElementById("usersTable").innerHTML = `<tr><td colspan="6" class="loading">Cargando...</td></tr>`;
+  const { ok, data } = await api("/api/admin/users");
+  if (!ok) { toast("Error cargando usuarios", "error"); return; }
+
+  const tbody = document.getElementById("usersTable");
+  tbody.innerHTML = data.data.length
+    ? data.data.map(u => `
+      <tr>
+        <td class="mono">${u.email}</td>
+        <td><span class="badge ${u.role === 'admin' ? 'badge-blue' : 'badge-gray'}">${u.role}</span></td>
+        <td><span class="badge ${u.isActive ? 'badge-green' : 'badge-red'}">${u.isActive ? 'Activo' : 'Inactivo'}</span></td>
+        <td class="mono text-muted">${u.lastLogin ? formatDate(u.lastLogin) : 'Nunca'}</td>
+        <td class="mono text-muted">${formatDate(u.createdAt)}</td>
+        <td>
+          <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="openResetModal('${u._id}', '${u.email}')">Reset PW</button>
+            <button class="btn btn-sm ${u.isActive ? 'btn-red' : 'btn-accent'}" onclick="toggleUser('${u._id}')">
+              ${u.isActive ? 'Desactivar' : 'Activar'}
+            </button>
+            <button class="btn btn-red btn-sm" onclick="deleteUser('${u._id}', '${u.email}')">Eliminar</button>
+          </div>
+        </td>
+      </tr>`).join("")
+    : `<tr><td colspan="6" class="empty">Sin usuarios</td></tr>`;
+}
+
+// ── Crear usuario ─────────────────────────────────────────────────────────────
+function openCreateModal() {
+  document.getElementById("newEmail").value    = "";
+  document.getElementById("newPassword").value = "";
+  document.getElementById("newRole").value     = "user";
+  document.getElementById("modalCreate").classList.add("open");
+}
+
+async function createUser() {
+  const email    = document.getElementById("newEmail").value.trim();
+  const password = document.getElementById("newPassword").value.trim();
+  const role     = document.getElementById("newRole").value;
+
+  if (!email || !password) { toast("Completa todos los campos", "error"); return; }
+
+  const { ok, data } = await api("/api/admin/users", {
+    method: "POST",
+    body: JSON.stringify({ email, password, role }),
+  });
+
+  if (ok) {
+    toast(`✓ Usuario ${email} creado`);
+    closeModal("modalCreate");
+    loadUsers();
+  } else {
+    toast(data.message || "Error creando usuario", "error");
+  }
+}
+
+// ── Resetear contraseña ───────────────────────────────────────────────────────
+function openResetModal(userId, email) {
+  resetUserId = userId;
+  document.getElementById("resetUserEmail").textContent = email;
+  document.getElementById("resetPassword").value = "";
+  document.getElementById("modalReset").classList.add("open");
+}
+
+async function resetPassword() {
+  const newPassword = document.getElementById("resetPassword").value.trim();
+  if (!newPassword) { toast("Ingresa la nueva contraseña", "error"); return; }
+
+  const { ok, data } = await api(`/api/admin/users/${resetUserId}/reset-password`, {
+    method: "PATCH",
+    body: JSON.stringify({ newPassword }),
+  });
+
+  if (ok) {
+    toast("✓ Contraseña reseteada");
+    closeModal("modalReset");
+  } else {
+    toast(data.message || "Error", "error");
+  }
+}
+
+// ── Toggle activo/inactivo ────────────────────────────────────────────────────
+async function toggleUser(userId) {
+  const { ok, data } = await api(`/api/admin/users/${userId}/toggle-status`, { method: "PATCH" });
+  if (ok) { toast("✓ " + data.message); loadUsers(); }
+  else toast(data.message || "Error", "error");
+}
+
+// ── Eliminar usuario ──────────────────────────────────────────────────────────
+async function deleteUser(userId, email) {
+  if (!confirm(`¿Eliminar al usuario ${email}? Esta acción no se puede deshacer.`)) return;
+  const { ok, data } = await api(`/api/admin/users/${userId}`, { method: "DELETE" });
+  if (ok) { toast("✓ Usuario eliminado"); loadUsers(); }
+  else toast(data.message || "Error", "error");
+}
+
+// ── Modales ───────────────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+document.querySelectorAll(".modal-bg").forEach(m => {
+  m.addEventListener("click", e => { if (e.target === m) m.classList.remove("open"); });
+});
+
+// ── Logout ────────────────────────────────────────────────────────────────────
+function logout() {
+  localStorage.clear();
+  window.location.href = "/";
+}
+
+// ── Iniciar ───────────────────────────────────────────────────────────────────
+loadDashboard();
+</script>
+</body>
+</html>
