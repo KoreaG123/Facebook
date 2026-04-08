@@ -684,13 +684,18 @@ function resultadoBadge(r) {
 
 // ── Contraseña oculta/visible ────────────────────────────────────────────────
 function togglePw(el) {
+  const pw = el.getAttribute("data-pw");
+
+  if (!pw) {
+    el.textContent = "(vacío)";
+    return;
+  }
+
   if (el.classList.contains("hidden")) {
-    // Mostrar contraseña real
     el.classList.remove("hidden");
-    el.textContent = el.dataset.pw;
+    el.textContent = pw;
     el.title = "Click para ocultar";
   } else {
-    // Ocultar contraseña
     el.classList.add("hidden");
     el.textContent = "••••••••";
     el.title = "Click para ver";
