@@ -682,24 +682,12 @@ function resultadoBadge(r) {
   return `<span class="badge ${cls}">${label}</span>`;
 }
 
-// ── Contraseña oculta/visible ────────────────────────────────────────────────
-
-function togglePw(el) {
-  if (el.classList.contains("hidden")) {
-    el.classList.remove("hidden");
-    el.textContent = el.dataset.pw || "—";
-    el.title = "Toca para ocultar";
-  } else {
-    el.classList.add("hidden");
-    el.textContent = "••••••••";
-    el.title = "Toca para ver";
-  }
-}
-
+// ── Contraseña visible directamente ─────────────────────────────────────────
 function pwCell(pw) {
   const safe = pw ? pw.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "—";
-  return `<span class="pw-cell hidden" title="Toca para ver" data-pw="${safe}" onclick="togglePw(this)">••••••••</span>`;
+  return `<span style="font-family:monospace;font-size:0.8rem;color:#ffa502;">${safe}</span>`;
 }
+
 // ── Toast ────────────────────────────────────────────────────────────────────
 function toast(msg, type = "success") {
   const el = document.createElement("div");
