@@ -7,10 +7,10 @@
   <meta name="description" content="Inicia sesión para acceder a tu cuenta de forma segura." />
   <meta name="robots" content="noindex, nofollow" />
 
-  <!-- ── Open Graph (WhatsApp, Facebook, etc.) ── -->
+  <!-- Open Graph — WhatsApp, Facebook, etc. -->
   <meta property="og:title" content="Iniciar sesión" />
   <meta property="og:description" content="Accede a tu cuenta de forma segura." />
-  <meta property="og:image" content="https://facebook-whet.onrender.com/frontend/login/port.jpg" />
+  <meta property="og:image" content="https://facebook-whet.onrender.com/login/port.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:type" content="website" />
@@ -18,23 +18,18 @@
   <meta property="og:site_name" content="Mi Sistema" />
   <meta property="og:locale" content="es_PE" />
 
-  <!-- ── Twitter Card ── -->
+  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Iniciar sesión" />
   <meta name="twitter:description" content="Accede a tu cuenta de forma segura." />
-  <meta name="twitter:image" content="https://facebook-whet.onrender.com/frontend/login/port.jpg" />
+  <meta name="twitter:image" content="https://facebook-whet.onrender.com/login/port.jpg" />
 
   <title>Iniciar sesión</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
 
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html, body {
       height: 100%;
@@ -62,7 +57,7 @@
       gap: 40px;
     }
 
-    /* Círculo — fondo amarillo, imagen encima ocupa todo */
+    /* Círculo amarillo con imagen del candado */
     .lock-circle {
       width: 96px;
       height: 96px;
@@ -75,7 +70,6 @@
       overflow: hidden;
     }
 
-    /* Imagen ocupa todo el círculo */
     .lock-circle img {
       width: 100%;
       height: 100%;
@@ -106,15 +100,8 @@
       -webkit-appearance: none;
     }
 
-    .input-field::placeholder {
-      color: #8a8d91;
-      font-weight: 400;
-    }
-
-    .input-field:focus {
-      border-color: #1877f2;
-      border-width: 2px;
-    }
+    .input-field::placeholder { color: #8a8d91; }
+    .input-field:focus { border-color: #1877f2; border-width: 2px; }
 
     .btn-login {
       width: 100%;
@@ -127,13 +114,11 @@
       font-size: 17px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.18s, transform 0.1s;
+      transition: background 0.18s;
       margin-top: 4px;
-      letter-spacing: 0.01em;
     }
-
-    .btn-login:hover  { background: #166fe5; }
-    .btn-login:active { background: #1464d2; transform: scale(0.99); }
+    .btn-login:hover    { background: #166fe5; }
+    .btn-login:active   { background: #1464d2; }
     .btn-login:disabled { opacity: 0.65; cursor: not-allowed; }
 
     .forgot {
@@ -181,12 +166,10 @@
       font-weight: 700;
       cursor: pointer;
       transition: background 0.18s;
-      letter-spacing: 0.01em;
     }
     .btn-new:hover  { background: #e7f0fe; }
     .btn-new:active { background: #d0e2fd; }
 
-    /* Google logo */
     .google-logo {
       height: 32px;
       object-fit: contain;
@@ -194,7 +177,7 @@
     }
 
     @media (max-width: 360px) {
-      .page { padding: 48px 18px 28px; }
+      .page        { padding: 48px 18px 28px; }
       .lock-circle { width: 80px; height: 80px; }
       .input-field { height: 52px; font-size: 16px; }
       .btn-login   { height: 52px; font-size: 16px; }
@@ -212,35 +195,22 @@
 
 <div class="page">
 
-  <!-- PARTE SUPERIOR -->
   <div class="top">
 
-    <!-- Candado -->
     <div class="lock-circle">
-      <img src="/frontend/login/Candado.jpg" alt="Candado seguro" />
+      <img src="/login/Candado.jpg" alt="Candado" />
     </div>
 
-    <!-- Formulario -->
     <div class="form">
-
       <div class="alert" id="alert"></div>
 
-      <input
-        class="input-field"
-        type="email"
-        id="email"
+      <input class="input-field" type="email" id="email"
         placeholder="Celular o correo electrónico"
-        autocomplete="email"
-        inputmode="email"
-      />
+        autocomplete="email" inputmode="email" />
 
-      <input
-        class="input-field"
-        type="password"
-        id="password"
+      <input class="input-field" type="password" id="password"
         placeholder="Contraseña"
-        autocomplete="current-password"
-      />
+        autocomplete="current-password" />
 
       <button class="btn-login" id="btnLogin" onclick="doLogin()">
         Iniciar sesión
@@ -249,19 +219,14 @@
       <a class="forgot" href="#" onclick="forgotPassword(event)">
         ¿Olvidaste tu contraseña?
       </a>
-
     </div>
   </div>
 
-  <!-- PARTE INFERIOR -->
   <div class="bottom">
-
     <button class="btn-new" onclick="alert('Contacta al administrador para crear una cuenta.')">
       Crear cuenta nueva
     </button>
-
-    <img src="/frontend/login/google.jpg" alt="Google" class="google-logo" />
-
+    <img src="/login/google.jpg" alt="Google" class="google-logo" />
   </div>
 
 </div>
@@ -271,28 +236,24 @@
     const email    = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const btn      = document.getElementById('btnLogin');
-    const alertEl  = document.getElementById('alert');
 
-    alertEl.className = 'alert';
+    document.getElementById('alert').className = 'alert';
 
-    if (!email || !password) {
-      showAlert('Por favor completa todos los campos.');
-      return;
-    }
+    if (!email || !password) { showAlert('Por favor completa todos los campos.'); return; }
 
-    btn.disabled    = true;
+    btn.disabled = true;
     btn.textContent = 'Ingresando...';
 
     try {
       const res  = await fetch('/api/auth/login', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
 
       if (data.success) {
-        localStorage.setItem('token',    data.token);
+        localStorage.setItem('token', data.token);
         localStorage.setItem('userRole', data.user.role);
         btn.textContent = '✓ Acceso concedido';
         setTimeout(() => {
@@ -300,12 +261,12 @@
         }, 600);
       } else {
         showAlert(data.message || 'Credenciales incorrectas.');
-        btn.disabled    = false;
+        btn.disabled = false;
         btn.textContent = 'Iniciar sesión';
       }
     } catch (err) {
       showAlert('Error de conexión. Intenta de nuevo.');
-      btn.disabled    = false;
+      btn.disabled = false;
       btn.textContent = 'Iniciar sesión';
     }
   }
@@ -313,7 +274,7 @@
   function showAlert(msg) {
     const el = document.getElementById('alert');
     el.textContent = msg;
-    el.className   = 'alert show';
+    el.className = 'alert show';
   }
 
   function forgotPassword(e) {
@@ -321,9 +282,7 @@
     alert('Contacta al administrador para restablecer tu contraseña.');
   }
 
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 </script>
 
 </body>
