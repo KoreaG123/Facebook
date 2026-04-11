@@ -31,7 +31,7 @@
 
     html, body {
       height: 100%;
-      background: #ffffff;
+      background: #f0f2f5;
       font-family: 'Roboto', sans-serif;
       color: #1c1e21;
       -webkit-font-smoothing: antialiased;
@@ -44,7 +44,6 @@
       align-items: center;
       justify-content: space-between;
       padding: 48px 20px 32px;
-      background: #f0f2f5;
     }
 
     .top {
@@ -56,7 +55,6 @@
       gap: 20px;
     }
 
-    /* Idioma arriba */
     .lang {
       font-size: 15px;
       color: #65676b;
@@ -81,13 +79,6 @@
       height: 100%;
       object-fit: cover;
       display: block;
-    }
-
-    /* SVG F de fallback */
-    .fb-logo svg {
-      width: 44px;
-      height: 44px;
-      fill: #ffffff;
     }
 
     /* Formulario */
@@ -170,7 +161,6 @@
     }
     .alert.show { display: block; }
 
-    /* Botón crear cuenta */
     .btn-new {
       display: block;
       margin: 0 auto;
@@ -190,32 +180,16 @@
     .btn-new:hover  { background: #36a420; }
     .btn-new:active { background: #2d8f1a; }
 
-    /* Sección inferior */
     .bottom {
       width: 100%;
       max-width: 396px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
+      gap: 16px;
       padding-bottom: 8px;
     }
 
-    /* Meta logo */
-    .meta-logo {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #8a8d91;
-      font-size: 13px;
-    }
-
-    .meta-logo svg {
-      height: 18px;
-      fill: #8a8d91;
-    }
-
-    /* Links pie */
     .footer-links {
       display: flex;
       flex-wrap: wrap;
@@ -252,17 +226,9 @@
 
     <div class="lang">Español</div>
 
-    <!-- Logo F azul -->
+    <!-- Logo Facebook -->
     <div class="fb-logo">
-      <img
-        src="/login/Candado.jpg"
-        alt="Facebook"
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-      />
-      <!-- SVG F de fallback -->
-      <svg style="display:none;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-      </svg>
+      <img src="/login/Candado.jpg" alt="Facebook" />
     </div>
 
     <!-- Formulario -->
@@ -301,20 +267,15 @@
           Crear cuenta nueva
         </button>
       </div>
-    </div>
 
+    </div>
   </div>
 
   <!-- Parte inferior -->
   <div class="bottom">
 
-    <!-- Logo Meta -->
-    <div class="meta-logo">
-      <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 18C2 9.163 9.163 2 18 2s16 7.163 16 16-7.163 16-16 16S2 26.837 2 18zm10.5-4.5c-1.381 0-2.5 1.794-2.5 4s1.119 4 2.5 4 2.5-1.794 2.5-4-1.119-4-2.5-4zm11 0c-1.381 0-2.5 1.794-2.5 4s1.119 4 2.5 4 2.5-1.794 2.5-4-1.119-4-2.5-4z"/>
-      </svg>
-      <span>Meta</span>
-    </div>
+    <!-- Logo Meta imagen -->
+    <img src="/login/google.jpg" alt="Meta" style="height:28px; object-fit:contain;" />
 
     <!-- Links pie de página -->
     <div class="footer-links">
@@ -340,7 +301,7 @@
     btn.textContent = 'Ingresando...';
 
     try {
-      const res  = await fetch('/api/auth/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
